@@ -56,7 +56,7 @@ public class AlgamoneyExceptionHandler extends ResponseEntityExceptionHandler {
 
     /**
      * Tratamento de excesao, quando o metodo deletar for acionado e nao existir o id,
-     * retorna mensagem para o usuarioe para o desenvolvedor
+     * retorna mensagem para o usuario e para o desenvolvedor
      *
      * @param ex
      * @param request
