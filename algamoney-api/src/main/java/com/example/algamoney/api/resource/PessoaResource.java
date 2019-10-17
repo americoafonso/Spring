@@ -47,8 +47,8 @@ public class PessoaResource {
      */
     @PostMapping
     public ResponseEntity<Pessoa> criar(@Valid @RequestBody Pessoa pessoa, HttpServletResponse response) {
-
         Pessoa pessoaSalva = pessoaRepository.save(pessoa);
+        /** O Codigo a baixo nos retorna a url da Location que acabamos de criar Ex: 'http://localhost:8080/pessoas/id' */
         publisher.publishEvent(new RecursoCriadoEvent(this, response, pessoaSalva.getCodigo()));
         return ResponseEntity.status(HttpStatus.CREATED).body(pessoaSalva);
     }
@@ -76,12 +76,23 @@ public class PessoaResource {
         this.pessoaRepository.deleteById(codigo);
     }
 
+    /***
+     * Metodo para atualizar pelo codigo
+     * @param codigo
+     * @param pessoa
+     * @return
+     */
     @PutMapping("/{codigo}")
     public ResponseEntity<Pessoa> atualizar(@PathVariable Long codigo, @Valid @RequestBody Pessoa pessoa) {
         Pessoa pessoaSalva = pessoaService.atualizar(codigo, pessoa);
         return ResponseEntity.ok(pessoaSalva);
     }
 
+    /***
+     * Metodo para fazer atualizacao parcial
+     * @param codigo
+     * @param ativo
+     */
     @PutMapping("/{codigo}/ativo")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void atualizarPropriedadeAtivo(@PathVariable Long codigo, @RequestBody Boolean ativo) {

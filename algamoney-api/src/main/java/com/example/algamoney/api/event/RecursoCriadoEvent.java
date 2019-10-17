@@ -1,8 +1,8 @@
 package com.example.algamoney.api.event;
 
-import org.springframework.context.ApplicationEvent;
-
 import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.context.ApplicationEvent;
 
 public class RecursoCriadoEvent extends ApplicationEvent {
 
@@ -17,11 +17,12 @@ public class RecursoCriadoEvent extends ApplicationEvent {
         this.codigo = codigo;
     }
 
+    public HttpServletResponse getResponse() {
+        return response;
+    }
+
     public Long getCodigo() {
         return codigo;
     }
 
-    public HttpServletResponse getResponse() {
-        return response;
-    }
 }

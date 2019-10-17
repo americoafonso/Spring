@@ -17,7 +17,7 @@ public class PessoaService {
     public Pessoa atualizar(Long codigo, Pessoa pessoa) {
         Pessoa pessoaSalva = buscarPessoaPeloCodigo(codigo);
         /** A classe BeanUtils com o metodo copyProperties permite copiar a entidade 'pessoa' vindo do cliente,
-         *  para o objeto 'pessoaSalva' ignorando somente a propriedade 'codigo' */
+         *  para o objeto 'pessoaSalva' ignorando somente o 'codigo' */
         BeanUtils.copyProperties(pessoa, pessoaSalva, "codigo");
 
         return pessoaRepository.save(pessoaSalva);
@@ -31,6 +31,6 @@ public class PessoaService {
 
     private Pessoa buscarPessoaPeloCodigo(Long codigo) {
         return this.pessoaRepository.findById(codigo)
-                .orElseThrow(() -> new EmptyResultDataAccessException(1)); /**Essa excecao caso a pessoaSalva = mull*/
+                .orElseThrow(() -> new EmptyResultDataAccessException(1)); /**Essa excecao e caso a pessoaSalva == mull*/
     }
 }
