@@ -1,13 +1,13 @@
 package com.example.algamoney.api.service;
 
-import com.example.algamoney.api.model.Pessoa;
-import com.example.algamoney.api.repository.PessoaRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-/**Aqui no service fica toda regra de negocio*/
+import com.example.algamoney.api.model.Pessoa;
+import com.example.algamoney.api.repository.PessoaRepository;
+
 @Service
 public class PessoaService {
 
@@ -16,10 +16,8 @@ public class PessoaService {
 
     public Pessoa atualizar(Long codigo, Pessoa pessoa) {
         Pessoa pessoaSalva = buscarPessoaPeloCodigo(codigo);
-        /** A classe BeanUtils com o metodo copyProperties permite copiar a entidade 'pessoa' vindo do cliente,
-         *  para o objeto 'pessoaSalva' ignorando somente o 'codigo' */
-        BeanUtils.copyProperties(pessoa, pessoaSalva, "codigo");
 
+        BeanUtils.copyProperties(pessoa, pessoaSalva, "codigo");
         return pessoaRepository.save(pessoaSalva);
     }
 
@@ -30,7 +28,11 @@ public class PessoaService {
     }
 
     private Pessoa buscarPessoaPeloCodigo(Long codigo) {
-        return this.pessoaRepository.findById(codigo)
-                .orElseThrow(() -> new EmptyResultDataAccessException(1)); /**Essa excecao e caso a pessoaSalva == mull*/
+        Pessoa pessoaSalva = buscarPessoaPeloCodigo(codigo);
+        if (pessoaSalva == null) {
+            throw new EmptyResultDataAccessException(1);
+        }
+        return pessoaSalva;
     }
+
 }
