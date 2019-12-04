@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import com.example.algamoney.api.repository.filter.LancamentoFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
@@ -39,8 +40,8 @@ public class LancamentoResource {
     private MessageSource messageSource;
 
     @GetMapping
-    public List<Lancamento> listar() {
-        return lancamentoRepository.findAll();
+    public List<Lancamento> pesquisar(LancamentoFilter lancamentoFilter) {
+        return lancamentoRepository.filtrar(lancamentoFilter);
     }
 
     @GetMapping("/{codigo}")
@@ -50,7 +51,6 @@ public class LancamentoResource {
     }
 
     /** Metodo para remover lancamento*/
-
     @DeleteMapping("/{codigo}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remover(@PathVariable Long codigo) {
