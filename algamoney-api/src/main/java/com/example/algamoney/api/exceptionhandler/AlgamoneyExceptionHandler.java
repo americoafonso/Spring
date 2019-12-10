@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @ControllerAdvice
-/** => Para que o metodo desta class funcione, precisa da anotacao @ControllerAdvice para observar toda aplicacao **/
+/** => Para que o metodo desta class funcione, precisa da anotacao @ControllerAdvice para observar qualquer tipo de excecao da aplicacao **/
 public class AlgamoneyExceptionHandler extends ResponseEntityExceptionHandler {
 
     /**
