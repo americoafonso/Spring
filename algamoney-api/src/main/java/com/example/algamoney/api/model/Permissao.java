@@ -1,34 +1,30 @@
 package com.example.algamoney.api.model;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 @Entity
-@Table(name ="categoria")
-public class Categoria {
+@Table(name = "permissao")
+public class Permissao {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long codigo;
+	private String descricao;
 	
-	@NotNull
-	@Size(min = 3, max = 20)
-	private String nome;
-
 	public Long getCodigo() {
 		return codigo;
 	}
-
 	public void setCodigo(Long codigo) {
 		this.codigo = codigo;
 	}
-
+	public String getDescricao() {
+		return descricao;
+	}
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -36,7 +32,6 @@ public class Categoria {
 		result = prime * result + ((codigo == null) ? 0 : codigo.hashCode());
 		return result;
 	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -45,7 +40,7 @@ public class Categoria {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Categoria other = (Categoria) obj;
+		Permissao other = (Permissao) obj;
 		if (codigo == null) {
 			if (other.codigo != null)
 				return false;
@@ -53,12 +48,6 @@ public class Categoria {
 			return false;
 		return true;
 	}
+		
 
-	public String getNome() {
-		return nome;
-	}
-
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
 }

@@ -1,17 +1,15 @@
 package com.example.algamoney.api.resource;
 
-import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import com.example.algamoney.api.event.RecursoCriadoEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,51 +17,44 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.algamoney.api.event.RecursoCriadoEvent;
 import com.example.algamoney.api.model.Categoria;
 import com.example.algamoney.api.repository.CategoriaRepository;
 
-@RestController
-@RequestMapping("/categorias")
+@RestController /* => este controlador rest define que a class passa a receber retorno do tipo JSON */
+@RequestMapping("/categorias") /* => mapeamento das requisoes */
 public class CategoriaResource {
 
-    @Autowired
-    private CategoriaRepository categoriaRepository;
+	@Autowired
+	private CategoriaRepository categoriaRepository;
+	
+	@Autowired
+	private ApplicationEventPublisher publisher;
 
-    @Autowired
-    private ApplicationEventPublisher publisher;
+	@GetMapping
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA')")
+	public List<Categoria> listar() {
+		return categoriaRepository.findAll();
+	}
 
-    /***
-     * Metodo para listar todas as categorias
-     * @return
-     */
-    @GetMapping
-    public List<Categoria> listar() {
-        return categoriaRepository.findAll();
-    }
+	@PostMapping
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CATEGORIA')")
+	public ResponseEntity<Categoria> criar(@Valid @RequestBody Categoria categoria, HttpServletResponse response) {
+		Categoria categoriaSalva = categoriaRepository.save(categoria);
+		publisher.publishEvent(new RecursoCriadoEvent(this, response, categoriaSalva.getCodigo()));
+		return ResponseEntity.status(HttpStatus.CREATED).body(categoriaSalva);
+	}
 
-    /***
-     * Metodo para salvar categoria
-     * @param categoria
-     * @param response
-     * @return
-     */
-    @PostMapping
-    public ResponseEntity<Categoria> criar(@Valid @RequestBody Categoria categoria, HttpServletResponse response) {
-        Categoria categoriaSalva = categoriaRepository.save(categoria);
-        /** O Codigo a baixo nos retorna a url da Location que acabamos de criar Ex: 'http://localhost:8080/categorias/id' */
-        publisher.publishEvent(new RecursoCriadoEvent(this, response, categoriaSalva.getCodigo()));
-        return ResponseEntity.status(HttpStatus.CREATED).body(categoriaSalva);
-    }
+	@GetMapping("/{codigo}")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA')")
+	public ResponseEntity<Categoria> buscarPeloCodigo(@PathVariable Long codigo) {
 
-    /***
-     * Metodo para buscar a pessoa pelo codigo
-     * @param codigo
-     * @return
-     */
-    @GetMapping("/{codigo}")
-    public ResponseEntity<?> buscarPeloCodigo(@PathVariable Long codigo) {
-        Optional<Categoria> categoria = categoriaRepository.findById(codigo);
-        return categoria != null ? ResponseEntity.ok(categoria) : ResponseEntity.notFound().build();
-    }
+		try {
+			Categoria categoriaEncontrada = categoriaRepository.findById(codigo).get();
+			return ResponseEntity.ok(categoriaEncontrada);
+		} catch (Exception e) {
+			return ResponseEntity.notFound().build();
+		}
+	}
 
 }
